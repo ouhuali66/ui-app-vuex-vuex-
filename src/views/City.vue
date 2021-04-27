@@ -18,6 +18,8 @@ import Vue from 'vue';
 // 引入轻提示组件
 import { Toast } from 'vant';
 
+import { mapMutations } from 'vuex'
+
 // 全局注册该组件
 Vue.use(Toast);
 
@@ -53,6 +55,7 @@ export default {
   },
   // 定义一个handleCityData方法来处理数据格式
   methods: {
+    ...mapMutations('CityModule', ['changeCityName', 'changeCityId']),
     handleCityData(cities) {
       // 该函数的作用就是输入原始数据，输出处理后的目标数据
      console.log(cities)
@@ -98,8 +101,8 @@ export default {
       // 记录cityId和cityName
       // this.$store.state.cityName = name
 
-      this.$store.commit("changeCityName", name)
-      this.$store.commit("changeCityId", cityId)
+      this.changeCityName(name)
+      this.changeCityId(cityId)
       this.$router.back()
     }
   }

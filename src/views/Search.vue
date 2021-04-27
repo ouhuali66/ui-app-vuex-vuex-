@@ -21,6 +21,9 @@
    import Vue from 'vue';
    import { Search, List, Cell } from 'vant';
 
+   import { mapState } from 'vuex'
+   import { mapActions } from 'vuex'
+
    Vue.use(Search).use(List).use(Cell);
    export default {
      data() {
@@ -29,22 +32,25 @@
        }
      },
       computed: {
+        ...mapState('CinemaModule', ['cinemaList']),
+        ...mapState('CityModule', ['cityId']),
       computedCinemaList () {
         if(this.value === '') return []
-        return this.$store.state.cinemaList.filter(item => item.name.toUpperCase().includes(this.value.toUpperCase()) || item.address.toUpperCase().includes(this.value.toUpperCase()))
+        return this.cinemaList.filter(item => item.name.toUpperCase().includes(this.value.toUpperCase()) || item.address.toUpperCase().includes(this.value.toUpperCase()))
       }
      },
      mounted() {
       //  console.log(this.$store.state.cinemaList)
       // this.cinemaList = this.$store.state.cinemaList
-      if(this.$store.state.cinemaList === 0) {
+      if(this.cinemaList === 0) {
         // vuex异步流程
-        this.$store.dispatch("getCinemaList", this.$store.state.cityId)
+        this.getCinemaList(this.cityId)
       }else {
         console.log('缓存')
       }
      },
      methods: {
+       ...mapActions('CinemaModule', ['getCinemaList']),
       //  点击取消按钮返回cinema页面
         handleCancel() {
        this.$router.replace('/cinema') //返回到cinema页面， 点击取消按钮后在点击返回键不可以返回到search页面

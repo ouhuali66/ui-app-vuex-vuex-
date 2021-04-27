@@ -1,51 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import http from '@/util/http'
+
+//导入模块
+import CityModule from './module/CityModule.js'
+import TabbarModule from './module/TabbarModule.js'
+import CinemaModule from './module/CinemaModule.js'
+
+import createPersistedState from 'vuex-persistedState'
+
 Vue.use(Vuex)
+
 export default new Vuex.Store({
-    state: {
-        cityId: '310100',
-        cityName: '上海',
-        isTabbarShow: true,
-        cinemaList: []
-    },
-    mutations: {
-        changeCityName(state, name) {
-            state.cityName = name
-        },
-        changeCityId(state, cityId) {
-            state.cityId = cityId
-        },
-        hideTabbar(state) {
-            state.isTabbarShow = false
-        },
-        showTabbar(state) {
-            state.isTabbarShow = true
-        },
-        //3-4、修改cinemaList的状态
-        setCinemaList(state, cinemaList) {
-            state.cinemaList = cinemaList
-        },
-        clearCinemaList(state) {
-            state.cinemaList = []
-        }
-    },
-    actions: {
-        getCinemaList(store, cityId) {
-            // 返回promise对象
-            return http({
-                url: `/gateway?cityId=${cityId}&ticketFlag=1&k=1682950`,
-                headers: {
-                    'X-Host': 'mall.film-ticket.cinema.list'
-                }
-            }).then(res => {
-                console.log(res.data)
-                    // 将拿到的数据提交到setCinemaList中在mutations中修改状态
-                store.commit("setCinemaList", res.data.data.cinemas)
-            })
-        }
+    plugins: [createPersistedState()],
+    // 导出vue中state中的对象 - 在state中设置初始状态值
+    state: {},
+    // 集中式修改状态
+    mutations: {},
+    // actions是专门用来做异步操作处理的
+    actions: {},
+    // 在modules中存放各个模块
+    modules: {
+        CityModule,
+        TabbarModule,
+        CinemaModule
     }
 })
-
-
-

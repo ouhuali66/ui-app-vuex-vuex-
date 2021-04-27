@@ -31,6 +31,7 @@ import Vue from 'vue';
 import { List, Cell } from 'vant';
 
 Vue.use(List).use(Cell);
+import {mapState} from 'vuex'
 
 
 // 定义过滤器
@@ -53,10 +54,13 @@ export default {
       total: 0
     }
   },
+  computed: {
+   ...mapState('CityModule', ['cityId'])
+  },
   // 在mounted生命周期中发送ajax请求数据
   mounted () {
     http({
-      url: `/gateway?cityId=${this.$store.state.cityId}&pageNum=1&pageSize=10&type=1&k=3030777`,
+      url: `/gateway?cityId=${this.cityId}&pageNum=1&pageSize=10&type=1&k=3030777`,
       headers: {
         'X-Host': 'mall.film-ticket.film.list'
       }
@@ -77,7 +81,7 @@ export default {
       this.current ++
       // 1、发送ajax请求新数据
       http({
-        url:`/gateway?cityId=310100&pageNum=${this.current}&pageSize=10&type=1&k=136082`,
+        url:`/gateway?cityId=${this.cityId}&pageNum=${this.current}&pageSize=10&type=1&k=136082`,
         headers: {
           'X-Host': 'mall.film-ticket.film.list'
         }

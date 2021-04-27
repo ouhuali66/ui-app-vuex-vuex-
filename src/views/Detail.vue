@@ -1,5 +1,6 @@
 <template>
   <!-- 渲染出错时必须要设置 v-if="filminfo"才能解决 -->
+  <v-touch @swipeleft="onSwipeLeft">
   <div v-if="filminfo">
     <detail-header v-top :title="filminfo.name"></detail-header>
       <div :style="{backgroundImage:'url('+ filminfo.poster+')'}" style="height:200px; background-size:cover; background-position: center" >
@@ -37,6 +38,7 @@
       </div>
 
   </div>
+</v-touch>
 </template>
 
 <script>
@@ -51,6 +53,12 @@ import detailHeader from './detail/DetailHeader.vue'
 import http from '../util/http'
 
 import { ImagePreview } from 'vant';
+
+import { mapMutations } from 'vuex'
+
+// 导入vue-touch
+import VueTouch from 'vue-touch'
+Vue.use(VueTouch, {name: 'v-touch'})
 
 
 
@@ -90,16 +98,23 @@ export default {
     detailHeader,
   },
   methods: {
+    ...mapMutations('TabbarModule', ['hideTabbar', 'showTabbar']),
     handlePreview(index) {
        ImagePreview({
          images: this.filminfo.photos,
          startPosition: index,
+         loop: false,
+         closeable: true,
+         closeIconPosition: 'top-left'
        });
+    },
+    onSwipeLeft() {
+      console.log('left')
     }
   },
   mounted () {
     //进入详情页面时隐藏tabbar
-    this.$store.commit("hideTabbar")
+    this.hideTabbar()
     console.log('利用获取的id，ajax请求后端接口', this.$route.query.id)
     http({
       // url: `https://m.maizuo.com/gateway?filmId=${this.$route.query.id}&k=997805 `, //动态添加路由方式1
@@ -114,7 +129,7 @@ export default {
   },
   beforeDestroy() {
    //离开详情页面时显示tabbar
-   this.$store.commit("showTabbar")
+   this.showTabbar()
   }
   // 详情数据的接口
   // https://m.maizuo.com/gateway?filmId=5426&k=997805
